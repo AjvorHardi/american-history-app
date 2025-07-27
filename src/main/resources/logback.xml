@@ -18,7 +18,7 @@
 
     <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/app-rolling.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- Daily rollover -->
             <fileNamePattern>logs/app-rolling.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
@@ -30,12 +30,26 @@
         </encoder>
     </appender>
 
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="CONSOLE" />
+        <queueSize>512</queueSize> <!-- Optional: Adjust queue size -->
+        <discardingThreshold>0</discardingThreshold> <!-- Optional: Discarding threshold -->
+    </appender>
+
 
     <logger name="com.example.american_history_app" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ASYNC_FILE"/>
     </logger>
 
+
+    <logger name="com.example.american_history_app" level="INFO" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+
+    <logger name="com.example.american_history_app" level="INFO" additivity="false">
+        <appender-ref ref="ROLLING_FILE"/>
+    </logger>
 
     <logger name="org.springframework" level="WARN"/>
 
@@ -44,8 +58,7 @@
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="ASYNC"/>
     </root>
 
 
